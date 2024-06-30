@@ -86,8 +86,9 @@ void ProcessManager::logout()
 
 void ProcessManager::startWindowManager()
 {
+    qDebug() << "Starting window manager";
     QProcess *wmProcess = new QProcess;
-    wmProcess->start("kwin_x11", QStringList());
+    wmProcess->start("kwin_wayland", QStringList());
 
     QEventLoop waitLoop;
     m_waitLoop = &waitLoop;
@@ -95,6 +96,13 @@ void ProcessManager::startWindowManager()
     QTimer::singleShot(30 * 1000, &waitLoop, SLOT(quit()));
     waitLoop.exec();
     m_waitLoop = nullptr;
+
+    if (wmProcess->state() == QProcess::Running) {
+        qDebug() << "Window manager started successfully";
+        m_wmStarted = true;
+    } else {
+        qDebug() << "Failed to start window manager";
+    }
 }
 
 void ProcessManager::loadSystemProcess()
