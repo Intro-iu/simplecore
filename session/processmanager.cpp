@@ -30,8 +30,8 @@
 #include <QDir>
 
 #include <QX11Info>
-// #include <KWindowSystem>
-// #include <KWindowSystem/NETWM>
+#include <KWindowSystem>
+#include <KWindowSystem/NETWM>
 
 ProcessManager::ProcessManager(QObject *parent)
     : QObject(parent)

@@ -12,6 +12,7 @@ Application::Application(int &argc, char **argv)
     : QApplication(argc, argv)
     , m_processManager(new ProcessManager)
 {
+    qDebug() << "Start application";
     new SessionAdaptor(this);
 
     // connect to D-Bus and register as an object:
