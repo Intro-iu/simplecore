@@ -30,8 +30,8 @@
 #include <QDir>
 
 #include <QX11Info>
-#include <KWindowSystem>
-#include <KWindowSystem/NETWM>
+// #include <KWindowSystem>
+// #include <KWindowSystem/NETWM>
 
 ProcessManager::ProcessManager(QObject *parent)
     : QObject(parent)
@@ -109,6 +109,8 @@ void ProcessManager::loadSystemProcess()
     list << qMakePair(QString("cutefish-statusbar"), QStringList());
     list << qMakePair(QString("cutefish-dock"), QStringList());
     list << qMakePair(QString("cutefish-launcher"), QStringList());
+
+    list << qMakePair(QString("firefox"), QStringList());
 
     for (QPair<QString, QStringList> pair : list) {
         QProcess *process = new QProcess;
