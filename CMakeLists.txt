@@ -14,7 +14,7 @@ set(QT Core Gui Widgets Quick QuickControls2 DBus X11Extras LinguistTools)
 find_package(Qt5 REQUIRED ${QT})
 find_package(PkgConfig REQUIRED)
 find_package(ECM REQUIRED NO_MODULE)
-find_package(KF5::Windowsystem REQUIRED)
+find_package(KF5Windowsystem REQUIRED)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${ECM_MODULE_PATH})
 
