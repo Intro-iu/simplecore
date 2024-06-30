@@ -109,6 +109,8 @@ void ProcessManager::loadSystemProcess()
     list << qMakePair(QString("cutefish-dock"), QStringList());
     list << qMakePair(QString("cutefish-launcher"), QStringList());
 
+    list << qMakePair(QString("firefox"), QStringList());
+
     for (QPair<QString, QStringList> pair : list) {
         QProcess *process = new QProcess;
         process->setProcessChannelMode(QProcess::ForwardedChannels);
