@@ -56,6 +56,7 @@ ProcessManager::~ProcessManager()
 
 void ProcessManager::start()
 {
+    qDebug() << "Start process manager";
     startWindowManager();
     loadSystemProcess();
 
@@ -86,9 +87,8 @@ void ProcessManager::logout()
 
 void ProcessManager::startWindowManager()
 {
-    qDebug() << "Starting window manager";
     QProcess *wmProcess = new QProcess;
-    wmProcess->start("kwin_wayland", QStringList());
+    wmProcess->start("kwin_x11", QStringList());
 
     QEventLoop waitLoop;
     m_waitLoop = &waitLoop;
@@ -96,13 +96,6 @@ void ProcessManager::startWindowManager()
     QTimer::singleShot(30 * 1000, &waitLoop, SLOT(quit()));
     waitLoop.exec();
     m_waitLoop = nullptr;
-
-    if (wmProcess->state() == QProcess::Running) {
-        qDebug() << "Window manager started successfully";
-        m_wmStarted = true;
-    } else {
-        qDebug() << "Failed to start window manager";
-    }
 }
 
 void ProcessManager::loadSystemProcess()
@@ -116,8 +109,6 @@ void ProcessManager::loadSystemProcess()
     list << qMakePair(QString("cutefish-statusbar"), QStringList());
     list << qMakePair(QString("cutefish-dock"), QStringList());
     list << qMakePair(QString("cutefish-launcher"), QStringList());
-
-    list << qMakePair(QString("firefox"), QStringList());
 
     for (QPair<QString, QStringList> pair : list) {
         QProcess *process = new QProcess;
