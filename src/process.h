@@ -12,7 +12,6 @@ public:
     void start(const QString &program, const QStringList &arguments, const QProcessEnvironment &env = QProcessEnvironment::systemEnvironment());
     void stop();
 
-private:
     QProcess process;
 };
 

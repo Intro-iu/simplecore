@@ -4,7 +4,9 @@ int main(int argc, char *argv[])
 {
     Application app(argc, argv);
 
-    app.startWaylandSession();
+    app.initEnvironment();
+    app.startWindowManager();
+    app.startApplication("firefox");
 
     return app.exec();
 }
