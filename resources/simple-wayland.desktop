@@ -1,5 +1,0 @@
-[Desktop Entry]
-Name=Simple Wayland
-Comment=Start a Wayland session
-Exec=simple-session
-Type=Application

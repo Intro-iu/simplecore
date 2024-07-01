@@ -1,0 +1,4 @@
+[Desktop Entry]
+Name=SimpleSession
+Exec=/usr/bin/simple-session
+Type=Application
