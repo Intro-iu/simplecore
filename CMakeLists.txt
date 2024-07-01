@@ -1,13 +1,13 @@
 cmake_minimum_required(VERSION 3.10)
 
-project(session)
+project(simple-session)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_AUTOMOC ON)
 
 find_package(Qt6 REQUIRED COMPONENTS Core)
 
-add_executable(session
+add_executable(simple-session
     src/main.cpp
     src/process.cpp
     src/process.h
@@ -15,7 +15,7 @@ add_executable(session
     src/application.h
 )
 
-target_link_libraries(session Qt6::Core)
+target_link_libraries(simple-session Qt6::Core)
 
 install(TARGETS simple-session RUNTIME DESTINATION bin)
 install(FILES resources/prts-wayland.desktop DESTINATION share/applications)
