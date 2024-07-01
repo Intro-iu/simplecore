@@ -1,5 +1,0 @@
-[Desktop Entry]
-Name=Wayland Session
-Comment=Start a Wayland session
-Exec=/path/to/your/application/MyDesktopEnvironment
-Type=Application
