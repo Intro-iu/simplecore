@@ -1,22 +1,19 @@
 #ifndef APPLICATION_H
 #define APPLICATION_H
 
-#include <QCoreApplication>
-#include "process.h"
+#include <QGuiApplication>
+#include "compositor.h"
 
-class Application : public QCoreApplication
+class Application : public QGuiApplication
 {
     Q_OBJECT
 public:
     Application(int &argc, char **argv);
-    void startWindowManager();
+    void startWaylandSession();
     void startApplication(const QString &program, const QStringList &arguments = {});
-    void initEnvironment();
 
 private:
-    Process waylandSession;
-    QList<Process*> runningProcesses;
-    QProcessEnvironment env;
+    Compositor compositor;
 };
 
 #endif // APPLICATION_H
