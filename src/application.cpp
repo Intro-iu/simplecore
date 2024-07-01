@@ -1,10 +1,8 @@
 #include "application.h"
 #include <QProcessEnvironment>
 #include <QThread>
-#include <QTimer>
-#include <QEventLoop>
-#include <unistd.h> // 包含这个头文件来使用 getuid
 #include <QDebug>
+#include <unistd.h> // 包含这个头文件来使用 getuid
 
 Application::Application(int &argc, char **argv)
     : QCoreApplication(argc, argv)
@@ -20,29 +18,31 @@ void Application::initEnvironment()
 
 void Application::startWindowManager()
 {
-    Process *wmProcess = new Process(this);
-    wmProcess->start("weston", QStringList(), env);
+    waylandSession.start("weston", QStringList(), env);
 
-    if (!wmProcess->process.waitForStarted()) {
+    if (!waylandSession.process.waitForStarted()) {
         qWarning() << "Failed to start Weston process";
         return;
     }
 
-    if (!env.contains("WAYLAND_DISPLAY")) {
-        QEventLoop waitLoop;
-        m_waitLoop = &waitLoop;
-        // 添加一个超时以避免在WM执行失败时无限阻塞
-        QTimer::singleShot(30 * 1000, &waitLoop, SLOT(quit()));
-        waitLoop.exec();
-        m_waitLoop = nullptr;
+    if (!waylandSession.process.waitForReadyRead()) {
+        qWarning() << "Failed to get ready read from Weston process";
+        return;
     }
 
-    runningProcesses.append(wmProcess);
+    qDebug() << "Weston process started successfully";
 }
 
 void Application::startApplication(const QString &program, const QStringList &arguments)
 {
     Process* app = new Process(this);
-    app->start(program, arguments);
+    app->start(program, arguments, env);
+
+    if (!app->process.waitForStarted()) {
+        qWarning() << "Failed to start application process:" << program;
+        delete app;
+        return;
+    }
+
     runningProcesses.append(app);
 }
