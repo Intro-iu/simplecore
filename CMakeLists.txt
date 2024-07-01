@@ -15,7 +15,7 @@ add_executable(session
     src/application.h
 )
 
-target_link_libraries(ession Qt6::Core)
+target_link_libraries(session Qt6::Core)
 
 install(TARGETS simple-session RUNTIME DESTINATION bin)
 install(FILES resources/prts-wayland.desktop DESTINATION share/applications)
