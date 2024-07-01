@@ -1,21 +1,21 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.10)
+
 project(simplecore)
 
-set(CMAKE_INCLUDE_CURRENT_DIR ON)
-
-set(CMAKE_AUTOUIC ON)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_AUTOMOC ON)
-set(CMAKE_AUTORCC ON)
 
-set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
+find_package(Qt6 REQUIRED COMPONENTS Core)
 
-set(QT Core Gui Widgets Quick QuickControls2 DBus X11Extras LinguistTools)
-find_package(Qt5 REQUIRED ${QT})
-find_package(PkgConfig REQUIRED)
-find_package(ECM REQUIRED NO_MODULE)
-find_package(KF5WindowSystem REQUIRED)
+add_executable(prts-session
+    src/main.cpp
+    src/process.cpp
+    src/process.h
+    src/application.cpp
+    src/application.h
+)
 
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${ECM_MODULE_PATH})
+target_link_libraries(prts-session Qt6::Core)
 
-add_subdirectory(session)
+install(TARGETS prts-session RUNTIME DESTINATION bin)
+install(FILES resources/prts-wayland.desktop DESTINATION share/applications)
