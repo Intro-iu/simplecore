@@ -4,60 +4,46 @@
 #include <KWayland/Client/event_queue.h>
 #include <KWayland/Client/registry.h>
 #include <KWayland/Client/compositor.h>
-#include <syslog.h>
-#include <QObject>
+#include <KWayland/Client/surface.h>
 
 using namespace KWayland::Client;
 
 int main(int argc, char *argv[])
 {
-    // 打开syslog连接
-    openlog("simple-session", LOG_PID | LOG_CONS, LOG_USER);
-    syslog(LOG_INFO, "Application started");
-
     QApplication app(argc, argv);
 
-    ConnectionThread connection;
-    connection.initConnection();
-    if (!connection.display()) {
-        syslog(LOG_ERR, "Failed to connect to Wayland server");
-        closelog();
-        return -1;
-    }
-    syslog(LOG_INFO, "Connected to Wayland server");
+    // Create and connect to the Wayland server
+    ConnectionThread *connection = new ConnectionThread;
+    connection->setSocketName(QStringLiteral("wayland-0"));
+    connection->initConnection();
 
-    EventQueue queue;
-    queue.setup(&connection);
-    syslog(LOG_INFO, "EventQueue setup complete");
+    // Create an event queue and set it up with the connection
+    EventQueue *queue = new EventQueue;
+    queue->setup(connection);
 
-    Registry registry;
-    registry.setEventQueue(&queue);
-    registry.create(&connection);
-    registry.setup();
+    // Create and setup a registry
+    Registry *registry = new Registry;
+    registry->setEventQueue(queue);
+    registry->create(connection);
+    registry->setup();
 
-    Compositor *compositor = nullptr;
-    QObject::connect(&registry, &Registry::compositorAnnounced, [&](uint32_t name, uint32_t version) {
-        compositor = registry.createCompositor(name, version);
+    // Sync the registry
+    QObject::connect(registry, &Registry::interfacesAnnounced, [&]() {
+        // Check for the required interfaces here
+        if (!registry->hasInterface(Registry::Interface::Compositor)) {
+            qFatal("Compositor interface not available.");
+        }
     });
 
-    if (!compositor) {
-        syslog(LOG_ERR, "Failed to create compositor");
-        closelog();
-        return -1;
-    }
-    syslog(LOG_INFO, "Compositor created");
+    // Create a compositor and surface
+    Compositor *compositor = registry->createCompositor(registry->interface(Registry::Interface::Compositor).name, registry->interface(Registry::Interface::Compositor).version);
+    Surface *surface = compositor->createSurface();
 
+    // Create a Qt widget to represent the window
     QWidget window;
     window.setWindowTitle("Simple Wayland Desktop");
     window.resize(800, 600);
     window.show();
-    syslog(LOG_INFO, "Window shown");
 
-    int result = app.exec();
-    syslog(LOG_INFO, "Application exited with code %d", result);
-
-    // 关闭syslog连接
-    closelog();
-
-    return result;
+    return app.exec();
 }
