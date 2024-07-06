@@ -23,7 +23,6 @@ int main(int argc, char *argv[])
     }
 
     // 开机自启动应用程序示例
-    startApplication("konsole");  // 启动终端
     startApplication("firefox");  // 启动浏览器
 
     QQmlApplicationEngine engine;
