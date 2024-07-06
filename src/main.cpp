@@ -1,64 +1,63 @@
 #include <QApplication>
 #include <QWidget>
-#include <QDebug>
 #include <KWayland/Client/connection_thread.h>
 #include <KWayland/Client/event_queue.h>
 #include <KWayland/Client/registry.h>
 #include <KWayland/Client/compositor.h>
+#include <syslog.h>
+#include <QObject>
 
 using namespace KWayland::Client;
 
 int main(int argc, char *argv[])
 {
+    // 打开syslog连接
+    openlog("simple-session", LOG_PID | LOG_CONS, LOG_USER);
+    syslog(LOG_INFO, "Application started");
+
     QApplication app(argc, argv);
 
-    // Create and setup the Wayland connection
-    auto connection = ConnectionThread::fromApplication();
-    if (!connection) {
-        qFatal("Failed to create Wayland connection");
+    ConnectionThread connection;
+    connection.initConnection();
+    if (!connection.display()) {
+        syslog(LOG_ERR, "Failed to connect to Wayland server");
+        closelog();
         return -1;
     }
+    syslog(LOG_INFO, "Connected to Wayland server");
 
     EventQueue queue;
-    queue.setup(connection);
+    queue.setup(&connection);
+    syslog(LOG_INFO, "EventQueue setup complete");
 
     Registry registry;
-    QObject::connect(&registry, &Registry::interfacesAnnounced, [&]() {
-        auto interfaces = registry.interfaces();
-        bool compositorFound = false;
-        quint32 compositorName = 0;
-        quint32 compositorVersion = 0;
-
-        for (const auto &interface : interfaces) {
-            if (interface.name == "wl_compositor") {
-                compositorFound = true;
-                compositorName = interface.name;
-                compositorVersion = interface.version;
-                break;
-            }
-        }
-
-        if (!compositorFound) {
-            qFatal("Compositor interface is not valid");
-            app.quit();
-        }
-
-        Compositor *compositor = registry.createCompositor(compositorName, compositorVersion);
-        if (!compositor) {
-            qFatal("Failed to create Wayland compositor");
-            app.quit();
-        }
-
-        QWidget window;
-        window.setWindowTitle("Simple Wayland Desktop");
-        window.resize(800, 600);
-        window.show();
-
-        qDebug() << "Wayland connection and compositor created successfully.";
-    });
-
-    registry.create(connection);
+    registry.setEventQueue(&queue);
+    registry.create(&connection);
     registry.setup();
 
-    return app.exec();
+    Compositor *compositor = nullptr;
+    QObject::connect(&registry, &Registry::compositorAnnounced, [&](uint32_t name, uint32_t version) {
+        compositor = registry.createCompositor(name, version);
+    });
+
+    if (!compositor) {
+        syslog(LOG_ERR, "Failed to create compositor");
+        closelog();
+        return -1;
+    }
+    syslog(LOG_INFO, "Compositor created");
+
+    QWidget window;
+    window.setWindowTitle("Simple Wayland Desktop");
+    window.resize(800, 600);
+    window.show();
+    syslog(LOG_INFO, "Window shown");
+
+    int result = app.exec();
+    syslog(LOG_INFO, "Application exited with code %d", result);
+
+    // 关闭syslog连接
+    closelog();
+
+    return result;
 }
