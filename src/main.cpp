@@ -1,21 +1,26 @@
 #include <QApplication>
-#include <KWayland/Client/connection_thread.h>
-#include <KWayland/Client/registry.h>
+#include <QPushButton>
+#include <QProcess>
+#include <QMessageBox>
 
-int main(int argc, char **argv) {
+void startKwinWayland() {
+    QProcess process;
+    process.start("kwin_wayland");
+    if (!process.waitForStarted()) {
+        QMessageBox::critical(nullptr, "Error", "Failed to start kwin_wayland.");
+        return;
+    }
+    QMessageBox::information(nullptr, "Success", "kwin_wayland started successfully.");
+}
+
+int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
 
-    KWayland::Client::ConnectionThread *connection = new KWayland::Client::ConnectionThread;
-    connection->setSocketName("wayland-0");
-    connection->initConnection();
+    QPushButton button("Start Wayland Session");
+    QObject::connect(&button, &QPushButton::clicked, startKwinWayland);
 
-    KWayland::Client::Registry registry;
-    registry.create(connection);
-    registry.setup();
-
-    QObject::connect(connection, &KWayland::Client::ConnectionThread::connected, [&]() {
-        qDebug() << "Connected to Wayland server";
-    });
+    button.resize(200, 100);
+    button.show();
 
     return app.exec();
 }
