@@ -10,7 +10,12 @@ find_package(KWayland REQUIRED)
 
 add_executable(simple-session src/main.cpp)
 
-target_link_libraries(simple-session Qt6::Core Qt6::Gui Qt6::Widgets Plasma::KWaylandClient)
+target_link_libraries(simple-session 
+    Qt6::Core 
+    Qt6::Gui 
+    Qt6::Widgets 
+    Plasma::KWaylandClient
+)
 
 install(TARGETS simple-session DESTINATION /usr/bin)
 install(FILES resources/simple-session.desktop DESTINATION /usr/share/wayland-sessions)
