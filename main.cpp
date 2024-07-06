@@ -1,27 +1,22 @@
-#include <QApplication>
-#include <QProcess>
-#include <QDebug>
+#include <QGuiApplication>
+#include <QQmlApplicationEngine>
+#include <QtWaylandCompositor/QWaylandCompositor>
+#include <KConfig>
+#include <KConfigGroup>
 
-int main(int argc, char *argv[]) {
-    QApplication app(argc, argv);
+int main(int argc, char *argv[])
+{
+    QGuiApplication app(argc, argv);
 
-    // 启动Weston
-    QProcess westonProcess;
-    westonProcess.start("weston");
+    QWaylandCompositor compositor;
+    compositor.setOutputGeometry(QRect(0, 0, 1920, 1080));
+    compositor.create();
 
-    if (!westonProcess.waitForStarted()) {
-        qDebug() << "Failed to start Weston";
+    QQmlApplicationEngine engine;
+    engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
+
+    if (engine.rootObjects().isEmpty())
         return -1;
-    }
-
-    // 启动其他应用程序
-    QProcess appProcess;
-    appProcess.start("/usr/bin/firefox");
-
-    if (!appProcess.waitForStarted()) {
-        qDebug() << "Failed to start application";
-        return -1;
-    }
 
     return app.exec();
 }

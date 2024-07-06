@@ -1,4 +1,10 @@
 [Desktop Entry]
-Name=SimpleSession
-Exec=/usr/bin/simple-session
+Version=1.0
+Name=Wayland Desktop
+Comment=Custom Wayland Desktop Environment
+Exec=simple-session
+Icon=wayland-desktop
 Type=Application
+X-GNOME-Autostart-enabled=true
+X-KDE-SessionType=wayland
+DesktopNames=WaylandDesktop

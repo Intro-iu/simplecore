@@ -1,16 +1,15 @@
-cmake_minimum_required(VERSION 3.14)
-
-# 项目信息
+cmake_minimum_required(VERSION 3.16)
 project(simple-session)
 
-# 查找Qt6库
-find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets)
+set(CMAKE_CXX_STANDARD 17)
 
-# 添加可执行文件
+find_package(Qt6 REQUIRED COMPONENTS Core Gui Quick WaylandCompositor)
+find_package(KF6 REQUIRED COMPONENTS Config CoreAddons WindowSystem)
+
 add_executable(simple-session main.cpp)
 
-# 链接Qt6库
-target_link_libraries(simple-session Qt6::Core Qt6::Gui Qt6::Widgets)
+target_link_libraries(simple-session Qt6::Core Qt6::Gui Qt6::Quick Qt6::WaylandCompositor KF6::Config KF6::CoreAddons KF6::WindowSystem)
 
-install(TARGETS simple-session DESTINATION bin)
-install(FILES simple-session.desktop DESTINATION /usr/share/wayland-sessions/)
+# Install executable and .desktop file
+install(TARGETS simple-session DESTINATION /usr/bin)
+install(FILES simple-session.desktop DESTINATION /usr/share/wayland-sessions)
