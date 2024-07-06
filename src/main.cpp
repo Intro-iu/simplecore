@@ -1,5 +1,6 @@
 #include <QApplication>
 #include <QWidget>
+#include <QDebug>
 #include <KWayland/Client/connection_thread.h>
 #include <KWayland/Client/event_queue.h>
 #include <KWayland/Client/registry.h>
@@ -23,7 +24,13 @@ int main(int argc, char *argv[])
 
     Registry registry;
     QObject::connect(&registry, &Registry::interfacesAnnounced, [&]() {
-        Compositor *compositor = registry.createCompositor(registry.interface(Registry::Interface::Compositor).name, registry.interface(Registry::Interface::Compositor).version);
+        const auto compositorInterface = registry.interface(Registry::Interface::Compositor);
+        if (!compositorInterface.isValid()) {
+            qFatal("Compositor interface is not valid");
+            app.quit();
+        }
+        
+        Compositor *compositor = registry.createCompositor(compositorInterface.name, compositorInterface.version);
         if (!compositor) {
             qFatal("Failed to create Wayland compositor");
             app.quit();
@@ -34,7 +41,7 @@ int main(int argc, char *argv[])
         window.resize(800, 600);
         window.show();
 
-        app.exec();
+        qDebug() << "Wayland connection and compositor created successfully.";
     });
 
     registry.create(connection);
