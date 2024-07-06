@@ -1,19 +1,15 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.16)
+project(simplecore)
 
-project(SimpleSession)
+set(CMAKE_CXX_STANDARD 17)
 
-find_package(Qt6 REQUIRED COMPONENTS Core Gui WaylandCompositor Qml Quick)
+find_package(KF6 REQUIRED COMPONENTS Wayland)
+find_package(Qt6 REQUIRED COMPONENTS Core Gui)
 
-set(CMAKE_AUTOMOC ON)
-set(CMAKE_AUTORCC ON)
-set(CMAKE_AUTOUIC ON)
+add_executable(simplecore src/main.cpp)
 
-qt_add_executable(simple-session
-    main.cpp
-    resources.qrc
+target_link_libraries(simplecore
+    Qt6::Core
+    Qt6::Gui
+    KF6::Wayland
 )
-
-target_link_libraries(simple-session Qt6::Core Qt6::Gui Qt6::WaylandCompositor Qt6::Qml Qt6::Quick)
-
-install(TARGETS simple-session DESTINATION bin)
-install(FILES simple-session.desktop DESTINATION /usr/share/wayland-sessions)
