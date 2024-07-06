@@ -24,13 +24,26 @@ int main(int argc, char *argv[])
 
     Registry registry;
     QObject::connect(&registry, &Registry::interfacesAnnounced, [&]() {
-        const auto compositorInterface = registry.interface(Registry::Interface::Compositor);
-        if (!compositorInterface.isValid()) {
+        auto interfaces = registry.interfaces();
+        bool compositorFound = false;
+        quint32 compositorName = 0;
+        quint32 compositorVersion = 0;
+
+        for (const auto &interface : interfaces) {
+            if (interface.name == "wl_compositor") {
+                compositorFound = true;
+                compositorName = interface.name;
+                compositorVersion = interface.version;
+                break;
+            }
+        }
+
+        if (!compositorFound) {
             qFatal("Compositor interface is not valid");
             app.quit();
         }
-        
-        Compositor *compositor = registry.createCompositor(compositorInterface.name, compositorInterface.version);
+
+        Compositor *compositor = registry.createCompositor(compositorName, compositorVersion);
         if (!compositor) {
             qFatal("Failed to create Wayland compositor");
             app.quit();
