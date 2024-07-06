@@ -8,7 +8,7 @@ find_package(KF6WindowSystem REQUIRED)
 
 add_executable(simple-session
     main.cpp
-    main.qml
+    qml.qrc
 )
 
 target_link_libraries(simple-session
@@ -21,3 +21,4 @@ target_link_libraries(simple-session
 
 install(TARGETS simple-session DESTINATION bin)
 install(FILES simple-session.desktop DESTINATION /usr/share/wayland-sessions)
+install(FILES main.qml DESTINATION /etc/PRTS/)
