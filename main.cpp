@@ -1,38 +1,27 @@
-#include <QGuiApplication>
-#include <QQmlApplicationEngine>
-#include <KWindowSystem>
+#include <QApplication>
 #include <QProcess>
 #include <QDebug>
 
-void startApplication(const QString &program, const QStringList &arguments = QStringList()) {
-    QProcess *process = new QProcess();
-    process->start(program, arguments);
-    if (!process->waitForStarted()) {
-        qWarning() << "Failed to start" << program << ":" << process->errorString();
-    }
-}
+int main(int argc, char *argv[]) {
+    QApplication app(argc, argv);
 
-int main(int argc, char *argv[])
-{
-    QGuiApplication app(argc, argv);
+    // 启动Weston
+    QProcess westonProcess;
+    westonProcess.start("weston");
 
-    // 初始化 KWin
-    if (!KWindowSystem::isPlatformWayland()) {
-        qWarning("This example requires a Wayland session.");
+    if (!westonProcess.waitForStarted()) {
+        qDebug() << "Failed to start Weston";
         return -1;
     }
 
-    // 开机自启动应用程序示例
-    startApplication("firefox");  // 启动浏览器
+    // 启动其他应用程序
+    QProcess appProcess;
+    appProcess.start("/usr/bin/firefox");
 
-    QQmlApplicationEngine engine;
-    const QUrl url(QStringLiteral("qrc:/main.qml"));
-    QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
-                     &app, [url](QObject *obj, const QUrl &objUrl) {
-        if (!obj && url == objUrl)
-            QCoreApplication::exit(-1);
-    }, Qt::QueuedConnection);
-    engine.load(url);
+    if (!appProcess.waitForStarted()) {
+        qDebug() << "Failed to start application";
+        return -1;
+    }
 
     return app.exec();
 }
