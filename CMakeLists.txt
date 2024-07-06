@@ -8,6 +8,7 @@ find_package(KF6WindowSystem REQUIRED)
 
 add_executable(simple-session
     main.cpp
+    main.qml
 )
 
 target_link_libraries(simple-session
