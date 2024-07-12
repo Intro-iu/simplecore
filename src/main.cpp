@@ -1,15 +1,5 @@
 #include <QGuiApplication>
-#include <QWaylandCompositor>
-#include <QDebug>
-
-class Compositor : public QWaylandCompositor
-{
-    Q_OBJECT
-public:
-    Compositor() {
-        create();
-    }
-};
+#include "compositor.h"
 
 int main(int argc, char **argv) {
     QGuiApplication app(argc, argv);

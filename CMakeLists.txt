@@ -3,18 +3,25 @@ cmake_minimum_required(VERSION 3.10)
 # 项目信息
 project(simple-session)
 
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
+set(CMAKE_AUTOUIC ON)
+
 # 查找Qt6包
 find_package(Qt6 REQUIRED COMPONENTS Core Gui WaylandClient WaylandCompositor)
 
 # 设置C++标准
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
+ 
 # 添加可执行文件
 add_executable(simple-session 
     src/main.cpp
-    # src/compositor.h
-    # src/compositor.cpp
+    src/compositor.h
+    src/compositor.cpp
 )
 
 # 链接Qt6库
