@@ -8,7 +8,7 @@ int main(int argc, char **argv) {
 
     Compositor *compositor = new Compositor();
     if (compositor->isCreated()) {
-        process.start("firefox");
+        ProcessManager *m_processManager;
     }
 
     return app.exec();
