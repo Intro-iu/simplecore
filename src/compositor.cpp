@@ -1,7 +1,11 @@
 #include "compositor.h"
 
 Compositor::Compositor() {
-    QWaylandCompositor::create();
+    try {
+        QWaylandCompositor::create();
+    } catch (const std::exception &e) {
+        qWarning("Failed to create compositor: %s", e.what());
+    }
 }
 
 Compositor::~Compositor() {}
