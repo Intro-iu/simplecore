@@ -13,8 +13,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # 添加可执行文件
 add_executable(simple-session 
     src/main.cpp
-    src/compositor.h
-    src/compositor.cpp
+    # src/compositor.h
+    # src/compositor.cpp
 )
 
 # 链接Qt6库
