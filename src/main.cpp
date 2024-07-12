@@ -4,11 +4,8 @@
 int main(int argc, char **argv) {
     QGuiApplication app(argc, argv);
 
-    Compositor compositor;
-
-    compositor.create();
-
-    if (!compositor.isCreated()) {
+    Compositor *compositor = new Compositor();
+    if (!compositor->isCreated()) {
         qWarning("Failed to create compositor");
         return 1;
     }
