@@ -1,17 +1,18 @@
 #include <QGuiApplication>
-#include <QWaylandCompositor>
+#include <QWaylandQuickCompositor>
+#include <QDebug>
 
-int main(int argc, char **argv)
-{
+int main(int argc, char **argv) {
     QGuiApplication app(argc, argv);
-    QWaylandCompositor compositor;
 
-    compositor.create();
+    QWaylandQuickCompositor *compositor = new QWaylandQuickCompositor;
 
-    if (!compositor.isCreated()) {
+    compositor->create();
+
+    if (!compositor->isCreated()) {
         qWarning("Failed to create compositor");
         return 1;
     }
-    
+
     return app.exec();
 }
