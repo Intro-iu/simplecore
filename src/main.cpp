@@ -8,7 +8,7 @@ int main(int argc, char **argv) {
 
     Compositor *compositor = new Compositor();
     if (compositor->isCreated()) {
-        ProcessManager *m_processManager;
+        process.start("konsole");
     }
 
     return app.exec();
