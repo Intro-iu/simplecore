@@ -1,11 +1,11 @@
 #include <QGuiApplication>
-#include <QWaylandQuickCompositor>
+#include <QWaylandCompositor>
 #include <QDebug>
 
 int main(int argc, char **argv) {
     QGuiApplication app(argc, argv);
 
-    QWaylandQuickCompositor *compositor = new QWaylandQuickCompositor;
+    QWaylandCompositor *compositor = new QWaylandCompositor;
 
     compositor->create();
 
